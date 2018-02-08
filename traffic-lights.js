@@ -1,44 +1,46 @@
 const TuringMachine = require('./TuringMachine').TuringMachine
 const Tape = require('./TuringMachine').Tape
+const Transition = require('./TuringMachine').Transition
 
 tapeLetters = ['s','.','1','.','.','.','.','.','.','2']
 tape = new Tape(tapeLetters, 0)
 
+
 transitions = []
-transitions[['red', 's']] = ['red+yellow', 's', 'L']
-transitions[['red+yellow', 's']] = ['green', 's', 'L']
-transitions[['green', 's']] = ['yellow', 's', 'L']
-transitions[['yellow', 's']] = ['red', 's', 'L']
+transitions.push(
+    new Transition('red', 's', 'red+yellow', 's', 'L'),
+    new Transition('red+yellow', 's', 'green', 's', 'L'),
+    new Transition('green', 's', 'yellow', 's', 'L'),
+    new Transition('yellow', 's', 'red', 's', 'L'),
 
-transitions[['red', '.']] = ['red', 'x', 'L']
-transitions[['red+yellow', '.']] = ['red+yellow', 'x', 'L']
-transitions[['green', '.']] = ['green', 'x', 'L']
-transitions[['yellow', '.']] = ['yellow', 'x', 'L']
+    new Transition('red', '.', 'red', 'x', 'L'),
+    new Transition('red+yellow', '.', 'red+yellow', 'x', 'L'),
+    new Transition('green', '.', 'green', 'x', 'L'),
+    new Transition('yellow', '.', 'yellow', 'x', 'L'),
 
-transitions[['red', 'x']] = ['red', '.', 'R']
-transitions[['red+yellow', 'x']] = ['red+yellow', '.', 'R']
-transitions[['green', 'x']] = ['green', '.', 'R']
-transitions[['yellow', 'x']] = ['yellow', '.', 'R']
+    new Transition('red', 'x', 'red', '.', 'R'),
+    new Transition('red+yellow', 'x', 'red+yellow', '.', 'R'),
+    new Transition('green', 'x', 'green', '.', 'R'),
+    new Transition('yellow', 'x', 'yellow', '.', 'R'),
 
-transitions[['red', '1']] = ['red', 'X', 'L']
-transitions[['red+yellow', '1']] = ['red+yellow', '1', 'R']
-transitions[['green', '1']] = ['green', 'X', 'L']
-transitions[['yellow', '1']] = ['yellow', '1', 'R']
+    new Transition('red', '1', 'red', 'X', 'L'),
+    new Transition('red+yellow', '1', 'red+yellow', '1', 'R'),
+    new Transition('green', '1', 'green', 'X', 'L'),
+    new Transition('yellow', '1', 'yellow', '1', 'R'),
 
-transitions[['red', 'X']] = ['red', '1', 'R']
-transitions[['green', 'X']] = ['green', '1', 'R']
+    new Transition('red', 'X', 'red', '1', 'R'),
+    new Transition('green', 'X', 'green', '1', 'R'),
 
-transitions[['red', '2']] = ['red', '2', 'R']
-transitions[['green', '2']] = ['green', '2', 'R']
+    new Transition('red', '2', 'red', '2', 'R'),
+    new Transition('green', '2', 'green', '2', 'R')
+)
 
 turingMachine = new TuringMachine(tape, 'red', [], transitions)
-turingMachine.draw()
 
 var turingInterval = setInterval(() => {
     if (turingMachine.goalStateReached()) {
         clearInterval(turingInterval)
     } else {
         turingMachine.runIteration()
-        turingMachine.draw()
     }
 }, 700)
